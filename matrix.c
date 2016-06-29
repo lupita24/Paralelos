@@ -1,88 +1,80 @@
 #include <stdio.h>
 #include <time.h>
-#define max( a, b ) ( ((a) > (b)) ? (a) : (b) )
-#define min( a, b ) ( ((a) < (b)) ? (a) : (b) )
+#include <stdlib.h>
 
+#define n 100
+#define nbloque 100
 
-#define n 1000
-#define BlockSize  100
-void matrix_product_simple()
-{
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+inline int min ( int a, int b ) { return a < b ? a : b; }
 
-    int row1, col1, row2, col2;
-    printf("Ingrese fila y columna de la primera matriz: ");
-    scanf("%d%d", &row1, &col1);
-    printf("Ingrese fila y columna de la segunda matriz: ");
-    scanf("%d%d",&row2, &col2);
-   
-    if(col1 == row2)
+void matrix_product_simple(int A[n][n],int B[n][n],int C[n][n])
+{        
+    for(int i=0; i<n; ++i)
     {
-    
-        int A[row1][col1],B[row2][col2],C[col1][row2],i,j,k;
-       for(i=0; i<row1; ++i)
-       {
-           for(j=0; j<col1; ++j)
-            {
-                A[i][j]=rand()%10;
-            }
-       }
-       
-       for(i=0; i<row2; ++i)
-       {
-           for(j=0; j<col2; ++j)
-            {
-                B[i][j]=rand()%10;
-            }
-       }
-        
-       for(i=0; i<row1; ++i)
-       {
-         for(j=0; j<col2; ++j)
-         {
-           for(k=0; k<col1; ++k)
-           {
-             C[i][j]+=A[i][k]*B[k][j];
-           }    
-         }
-       }
-    }
-    else
-    {
-       printf("Column of first matrix is different to row of second matrix");
-    }
-}
-
-void matrix_product_bloked()
-{
-    int a[n][n],b[n][n],c[n][n];
-    c[0][0]=0;
-    for(int i1=0;i1<(n/BlockSize);++i1)
-    {
-        for(int j1=0;j1<(n/BlockSize);++j1)
+        for(int j=0; j<n; ++j)
         {
-            for(int k1=0;k1<(n/BlockSize);++k1)
+            for(int k=0; k<n; ++k)
             {
-                for(int i=i1=0;i<min(i1+BlockSize-1);++i)
-                {
-                    for(int j=j1=0;j<min(j1+BlockSize-1);++j)
-                    {
-                        for(int k=k1;k<min(k1+BlockSize-1);++k)
-                        {               
-                            c[i][j] = c[i][j] + a[i][k] * b[k][j];
-                        }
-                    }
-                }
-            }
-        }          
-     }
+                C[i][j]+=A[i][k]*B[k][j];
+            }    
+        }
+    }
 }
 
+void matrix_product_bloked(int A[n][n],int B[n][n],int C[n][n]){
+
+
+	for(int i1=1;i1<n;i1=i1+nbloque){
+		for(int j1=1;j1<n;j1=j1+nbloque){
+			for(int k1=1;k1<n;k1=k1+nbloque){
+				for(int i=i1;i<MIN(i1+nbloque-1,n);i++){
+					for(int j=j1;j<MIN(j1+nbloque-1,n);j++){
+						for(int k=k1;k<MIN(k1+nbloque-1,n);k++){
+							C[i][j]+=A[i][k]*B[k][j];
+						}
+					}
+				}
+			}
+		}
+	}
+}	
 
 int main(){
+
+    int A[n][n];
+	int B[n][n];
+	int C[n][n];
+
+	for(int i=0; i<n;i++){
+		for(int j=0; j<n;j++){
+			A[i][j]=rand()%10;
+			
+		}
+	}
+
+	for(int i=0; i<n;i++){
+		for(int j=0; j<n;j++){
+			B[i][j]=rand()%10;
+			
+		}
+	}
+
+	for(int i=0; i<n;i++){
+		for(int j=0; j<n;j++){
+			C[i][j]=0;
+			
+		}
+	}
+	//printf("matrix_product_bloked: tamanio de matriz - 800");
+	printf("matrix_product_simple: tamanio de matriz - 800");
+    printf("\n\n");
     clock_t start = clock();
-    matrix_product_bloked();
+    matrix_product_simple(A,B,C);
+    //matrix_product_bloked(A,B,C);
     printf("Tiempo transcurrido: %f", ((double)clock() - start) / CLOCKS_PER_SEC);
     printf("\n\n");
+
     return 0;
     
 }
