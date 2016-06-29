@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define n 100
+#define n 800
 #define nbloque 100
 
 #define MIN(a,b) ((a) < (b) ? (a) : (b))

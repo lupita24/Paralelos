@@ -1,2 +1,0 @@
-# Paralelos
-practicas
